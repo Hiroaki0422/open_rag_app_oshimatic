@@ -1,0 +1,44 @@
+services:
+  api:
+    build: .
+    environment:
+      RAG_API__HOST: 0.0.0.0
+      RAG_METADATA__DATABASE_PATH: /app/var/metadata/rag.sqlite3
+      RAG_ARTIFACTS__ROOT_PATH: /app/var/artifacts
+      RAG_OPENSEARCH__URL: http://opensearch:9200
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./var:/app/var
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  opensearch:
+    image: opensearchproject/opensearch:2.19.3
+    environment:
+      discovery.type: single-node
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      DISABLE_SECURITY_PLUGIN: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+volumes:
+  opensearch-data:

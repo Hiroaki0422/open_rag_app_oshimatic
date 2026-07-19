@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rag-app"
+version = "0.1.0"
+description = "Reproducible foundations for a benchmark-driven RAG application"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.116,<1",
+  "opentelemetry-api>=1.36,<2",
+  "pydantic>=2.11,<3",
+  "pydantic-settings>=2.10,<3",
+  "python-json-logger>=3.3,<4",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.28,<1",
+  "mypy>=1.17,<2",
+  "pytest>=8.4,<9",
+  "pytest-cov>=6.2,<7",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+rag-api = "rag_app.main:run"
+rag-inspect-config = "rag_app.config.loader:inspect_config"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rag_app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: tests involving concrete infrastructure adapters"]
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient` is deprecated.*"]
+
+[tool.coverage.run]
+branch = true
+source = ["rag_app"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["rag_app"]
+plugins = ["pydantic.mypy"]

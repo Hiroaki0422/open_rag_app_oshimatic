@@ -1,0 +1,23 @@
+{
+  "schema_version": "experiment-config-v3",
+  "dataset": {
+    "schema_version": "dataset-selection-v2",
+    "name": "example-smoke",
+    "version": "v1",
+    "split": "dev",
+    "split_role": "development"
+  },
+  "intent": "development",
+  "features": {
+    "schema_version": "experiment-features-v1",
+    "dense_retrieval": false,
+    "generation": false,
+    "sparse_retrieval": false
+  },
+  "versions": {
+    "schema_version": "component-versions-v1"
+  },
+  "parameters": {
+    "purpose": "Phase 0 reproducibility demonstration"
+  }
+}
