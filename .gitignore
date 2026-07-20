@@ -20,4 +20,4 @@ experiments/reports/
 *.db
 *.log
 telemetry/
-
+/data/
